@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Laba3_Hopfild.Core
 {
@@ -37,32 +33,53 @@ namespace Laba3_Hopfild.Core
 
         public void Learning(IList<byte[,]> images)
         {
-            for (var count = 0; count < 10; ++count)
+            for (var count = 0; count < 1; ++count)
             {
                 foreach (var image in images)
                 {
-                    for (var j = 0; j < image.GetLength(0); ++j)
+                    var imageArray = this.ConvertToSingleRankArray(image);
+                    for (var j = 0; j < imageArray.Length; ++j)
                     {
-                        for (var i = 0; i < image.GetLength(1); ++i)
+                        for (var i = j; i < imageArray.Length; ++i)
                         {
-                            for (var y = 0; y < image.GetLength(0); ++y)
+                            if (j == i)
                             {
-                                for (var x = 0; x < image.GetLength(1); ++x)
-                                {
-                                    var xN = y * image.GetLength(1) + x;
-                                    var yN = j * image.GetLength(1) + i;
-                                    if (j == y && i == x)
-                                    {
-                                        this[xN, yN] = 0;
-                                    }
-                                    else
-                                    {
-                                        this[xN, yN] += image[j, i] * image[y, x];
-                                    }
-                                }
+                                this[i, j] = 0;
+                            }
+                            else
+                            {
+                                this[i, j] += imageArray[i] * imageArray[j];
                             }
                         }
                     }
+                }
+            }
+            this.Transponent();
+        }
+
+        private byte[] ConvertToSingleRankArray(byte[,] source)
+        {
+            var result = new byte[source.Length];
+            var maxI = source.GetLength(1);
+
+            for (var j = 0; j < source.GetLength(0); ++j)
+            {
+                for (var i = 0; i < source.GetLength(1); ++i)
+                {
+                    result[j * maxI + i] = source[j, i];
+                }
+            }
+
+            return result;
+        }
+
+        private void Transponent()
+        {
+            for (var j = 0; j < this._weights.Count; ++j)
+            {
+                for (var i = j; i < this._weights[0].Count; ++i)
+                {
+                    this[j, i] = this[i, j];
                 }
             }
         }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Laba3_Hopfild.Core
 {
@@ -21,12 +18,7 @@ namespace Laba3_Hopfild.Core
 
         public void PrepareNetwork(IList<bool[,]> source)
         {
-            IList<byte[,]> images = new List<byte[,]>
-            {
-                this.ConvertToBytes(source[0]),
-                this.ConvertToBytes(source[1]),
-                this.ConvertToBytes(source[2])
-            };
+            var images = source.Select(item => this.ConvertToBytes(item)).ToList();
 
             this._weights.Learning(images);
         }
@@ -57,6 +49,8 @@ namespace Laba3_Hopfild.Core
             this.ConvertToNeurons(source);
 
             this.InitializeNeurons(this._neurons[0].Count, out IDictionary<int, IDictionary<int, Neuron>> previous);
+            var neur = new float[this._neurons[0].Count, this._neurons[0].Count];
+            neur.Initialize();
 
             var countY = this._neurons.Count;
             var countX = this._neurons[0].Count;
@@ -68,17 +62,23 @@ namespace Laba3_Hopfild.Core
                 {
                     for (var i = 0; i < countX; ++i)
                     {
-                        float temp = 0.0f;
                         for (var y = 0; y < countY; ++y)
                         {
                             for (var x = 0; x < countX; ++x)
                             {
                                 var xN = y * countX + x;
                                 var yN = j * countX + i;
-                                temp += this._weights[xN, yN] * this._neurons[y][x].State;
+                                neur[y, x] += this._weights[xN, yN] * this._neurons[y][x].State;
                             }
                         }
-                        this._neurons[j][i].State = temp > 0 ? 1 : -1;
+                    }
+                }
+
+                for (var y = 0; y < countY; ++y)
+                {
+                    for (var x = 0; x < countX; ++x)
+                    {
+                        this._neurons[y][x].State = neur[y, x] > 0.0f ? 1 : -1;
                     }
                 }
 

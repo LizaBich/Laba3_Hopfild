@@ -116,8 +116,7 @@ namespace Laba3_Hopfild.Core.Tests
             this.images = new List<bool[,]>()
             {
                 this.imageA,
-                this.imageB,
-                this.imageY
+                this.imageB
             };
         }
 
@@ -146,9 +145,9 @@ namespace Laba3_Hopfild.Core.Tests
         {
             this._network.PrepareNetwork(this.images);
 
-            var result = this._network.Analyze(this.imageY, this.imageYNoise);
+            var result = this._network.Analyze(this.imageB, this.imageYNoise);
 
-            Assert.AreEqual(true, result);
+            Assert.AreEqual(false, result);
         }
 
         [TestMethod]
