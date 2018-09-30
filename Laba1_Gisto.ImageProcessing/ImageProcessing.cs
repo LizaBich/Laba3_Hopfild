@@ -208,6 +208,52 @@ namespace Laba2_Klaster.ImageProcessing
             return CleanFromNoise(origin, count + 1);
         }
 
+        public void InversColors(ref Bitmap source)
+        {
+            if (source.GetPixel(0, 0).R == 255 || source.GetPixel(source.Width - 1, source.Height - 1).R == 255)
+            {
+                for (var j = 0; j < source.Height; ++j)
+                {
+                    for (var i = 0; i < source.Width; ++i)
+                    {
+                        var pixel = source.GetPixel(i, j);
+                        source.SetPixel(i, j, Color.FromArgb(Math.Abs(pixel.R - 255), Math.Abs(pixel.G - 255), Math.Abs(pixel.B - 255)));
+                    }
+                }
+            }
+        }
+
+        public Bitmap AddNoise(Bitmap origin, float percent)
+        {
+            if (percent == 0) return origin;
+            var random = new Random();
+            percent /= 100;
+            var result = new Bitmap(origin.Width, origin.Height, PixelFormat.Format24bppRgb);
+            int countOfNoisePixels = Convert.ToInt32(this.GetActiveBytes(origin) * percent);
+
+            for (var j = 0; j < origin.Height; ++j)
+            {
+                for (var i = 0; i < origin.Width; ++i)
+                {
+                    result.SetPixel(i, j, origin.GetPixel(i, j));
+                }
+            }
+
+            for (var x = 0; x < countOfNoisePixels; ++x)
+            {
+                int i, j;
+                do
+                {
+                    i = random.Next(0, origin.Width);
+                    j = random.Next(0, origin.Height);
+                } while (origin.GetPixel(i, j).R == 255);
+
+                result.SetPixel(i, j, Color.FromArgb(255, 255, 255));
+            }
+
+            return result;
+        }
+
         public Bitmap MinMaxFilter(Bitmap origin, int power)
         {
             var newImage = new Bitmap(origin.Width, origin.Height, PixelFormat.Format24bppRgb);
@@ -241,6 +287,19 @@ namespace Laba2_Klaster.ImageProcessing
             }
 
             return FilterPart(newImage, isMin, ++count, stopVal);
+        }
+
+        private int GetActiveBytes(Bitmap origin)
+        {
+            int count = 0;
+            for (var j = 0; j < origin.Height; ++j)
+            {
+                for (var i = 0; i < origin.Width; ++i)
+                {
+                    if (origin.GetPixel(i, j).R == 255) ++count;
+                }
+            }
+            return count;
         }
     }
 }

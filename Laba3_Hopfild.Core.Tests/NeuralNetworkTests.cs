@@ -116,7 +116,8 @@ namespace Laba3_Hopfild.Core.Tests
             this.images = new List<bool[,]>()
             {
                 this.imageA,
-                this.imageB
+                this.imageB,
+                this.imageY
             };
         }
 
@@ -145,9 +146,9 @@ namespace Laba3_Hopfild.Core.Tests
         {
             this._network.PrepareNetwork(this.images);
 
-            var result = this._network.Analyze(this.imageB, this.imageYNoise);
+            var result = this._network.Analyze(this.imageY, this.imageYNoise);
 
-            Assert.AreEqual(false, result);
+            Assert.AreEqual(true, result);
         }
 
         [TestMethod]
@@ -155,20 +156,29 @@ namespace Laba3_Hopfild.Core.Tests
         {
             this._network.PrepareNetwork(this.images);
 
-            var result = this._network.Analyze(this.imageH, this.imageBNoise);
+            var result = this._network.Analyze(this.imageH, this.imageA);
 
             Assert.AreEqual(false, result);
         }
 
-        private void ArrayEquals(bool[,] expected, bool[,] actual)
+        [TestMethod]
+        public void TestForHImage1()
         {
-            for (var j = 0; j < expected.GetLength(0); ++j)
-            {
-                for (var i = 0; i < expected.GetLength(1); ++i)
-                {
-                    Assert.AreEqual(expected[j, i], actual[j, i], $"Not equal in [{j},{i}]");
-                }
-            }
+            this._network.PrepareNetwork(this.images);
+
+            var result = this._network.Analyze(this.imageH, this.imageB);
+
+            Assert.AreEqual(false, result);
+        }
+
+        [TestMethod]
+        public void TestForHImage2()
+        {
+            this._network.PrepareNetwork(this.images);
+
+            var result = this._network.Analyze(this.imageH, this.imageY);
+
+            Assert.AreEqual(false, result);
         }
     }
 }
