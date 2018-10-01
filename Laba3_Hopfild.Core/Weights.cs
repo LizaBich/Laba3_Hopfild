@@ -7,13 +7,12 @@ namespace Laba3_Hopfild.Core
 {
     internal sealed class Weights
     {
+        private IDictionary<int, IDictionary<int, float>> weights;
         private int _countOfNeurons;
-        private DbProcessor db;
 
         public Weights(int countOfNeurons)
         {
             this._countOfNeurons = countOfNeurons;
-            this.db = new DbProcessor();
             this.Initialize();
         }
 
@@ -21,52 +20,52 @@ namespace Laba3_Hopfild.Core
         {
             get
             {
-                return this.db.Weights.FirstOrDefault(item => item.Index == (y * this._countOfNeurons + x)).Value;
+                return this.weights[y][x];
+            }
+
+            private set
+            {
+                this.weights[y][x] = value;
             }
         }
 
         public void Learning(IList<byte[,]> images)
         {
-            // this.Clear();
+            this.Clear();
             this.Initialize();
 
-            Task.Run(() => {
-                try
+            for (var count = 0; count < 1; ++count)
+            {
+                foreach (var image in images)
                 {
-                    for (var count = 0; count < 1; ++count)
+                    var imageArray = this.ConvertToSingleRankArray(image);
+                    for (var j = 0; j < imageArray.Length; ++j)
                     {
-                        foreach (var image in images)
+                        for (var i = j; i < imageArray.Length; ++i)
                         {
-                            var imageArray = this.ConvertToSingleRankArray(image);
-                            for (var j = 0; j < imageArray.Length; ++j)
+                            if (j == i)
                             {
-                                for (var i = j; i < imageArray.Length; ++i)
-                                {
-                                    var val = this.db.Weights.FirstOrDefault(item => item.Index == (j * this._countOfNeurons + i));
-                                    if (j == i)
-                                    {
-                                        val.Value = 0;
-                                    }
-                                    else
-                                    {
-                                        var temp = val.Value + imageArray[i] * imageArray[j];
-                                        val.Value = temp;
-                                    }
-                                }
+                                this[i, j] = 0;
+                            }
+                            else
+                            {
+                                this[i, j] += imageArray[i] * imageArray[j];
                             }
                         }
                     }
+                }
+            }
 
-                    this.db.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    this.db.Dispose();
-                    throw;
-                }
-            }).Wait();
-            
             this.Transponent();
+        }
+
+        private void Clear()
+        {
+            foreach (var item in this.weights)
+            {
+                item.Value.Clear();
+            }
+            this.weights.Clear();
         }
 
         private byte[] ConvertToSingleRankArray(byte[,] source)
@@ -87,65 +86,26 @@ namespace Laba3_Hopfild.Core
 
         private void Transponent()
         {
-            Task.Run(() =>
+            for (var j = 0; j < this._countOfNeurons; ++j)
             {
-                try
+                for (var i = j; i < this._countOfNeurons; ++i)
                 {
-                    for (var j = 0; j < this._countOfNeurons; ++j)
-                    {
-                        for (var i = j; i < this._countOfNeurons; ++i)
-                        {
-                            var i1 = j * this._countOfNeurons + i;
-                            var i2 = i * this._countOfNeurons + j;
-                            var val1 = this.db.Weights.FirstOrDefault(item => item.Index == (j * this._countOfNeurons + i));
-                            var val2 = this.db.Weights.FirstOrDefault(item => item.Index == (i * this._countOfNeurons + j));
-                            val1.Value = val2.Value;
-                        }
-                    }
-
-                    this.db.SaveChanges();
+                    this[j, i] = this[i, j];
                 }
-                catch (Exception)
-                {
-                    this.db.Dispose();
-                    throw;
-                }
-            }).Wait();
+            }
         }
 
         private void Initialize()
         {
-            Task.Run(() => {
-                try
+            this.weights = new Dictionary<int, IDictionary<int, float>>();
+            for (var j = 0; j < this._countOfNeurons; ++j)
+            {
+                this.weights.Add(j, new Dictionary<int, float>());
+                for (var i = 0; i < this._countOfNeurons; ++i)
                 {
-                    for (var i = 0; i < this._countOfNeurons; ++i)
-                    {
-                        for (var j = 0; j < this._countOfNeurons; ++j)
-                        {
-                            var index = j * this._countOfNeurons + i;
-                            if (this.db.Weights.Any(item => item.Index == index))
-                            {
-                                this.db.Weights.First(item => item.Index == index).Value = 0.0f;
-                            }
-                            else
-                            {
-                                this.db.Weights.Add(new WeightModel()
-                                {
-                                    Index = index,
-                                    Value = 0.0f
-                                });
-                            }
-                        }
-                    }
-
-                    this.db.SaveChanges();
+                    this.weights[j].Add(i, 0.0f);
                 }
-                catch (Exception)
-                {
-                    this.db.Dispose();
-                    throw;
-                }
-            }).Wait();
+            }
         }
     }
 }

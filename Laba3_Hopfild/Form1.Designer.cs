@@ -268,6 +268,7 @@
             this.ProcessButton.TabIndex = 17;
             this.ProcessButton.Text = "Process data";
             this.ProcessButton.UseVisualStyleBackColor = true;
+            this.ProcessButton.Click += new System.EventHandler(this.ProcessButton_Click);
             // 
             // TrainButton
             // 
