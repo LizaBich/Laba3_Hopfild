@@ -63,6 +63,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.TestImagesButton = new System.Windows.Forms.Button();
+            this.IsCustomImages = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.FirstOriginImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ThirdOriginImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SecondOriginImage)).BeginInit();
@@ -213,6 +215,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.IsCustomImages);
             this.groupBox1.Controls.Add(this.ThirdImageCount);
             this.groupBox1.Controls.Add(this.SecondImageCount);
             this.groupBox1.Controls.Add(this.FirstImageCount);
@@ -388,11 +391,32 @@
             this.label12.TabIndex = 30;
             this.label12.Text = "12)";
             // 
+            // TestImagesButton
+            // 
+            this.TestImagesButton.Location = new System.Drawing.Point(136, 8);
+            this.TestImagesButton.Name = "TestImagesButton";
+            this.TestImagesButton.Size = new System.Drawing.Size(158, 31);
+            this.TestImagesButton.TabIndex = 31;
+            this.TestImagesButton.Text = "Browse test data";
+            this.TestImagesButton.UseVisualStyleBackColor = true;
+            this.TestImagesButton.Click += new System.EventHandler(this.TestImagesButton_Click);
+            // 
+            // IsCustomImages
+            // 
+            this.IsCustomImages.AutoSize = true;
+            this.IsCustomImages.Location = new System.Drawing.Point(10, 209);
+            this.IsCustomImages.Name = "IsCustomImages";
+            this.IsCustomImages.Size = new System.Drawing.Size(268, 21);
+            this.IsCustomImages.TabIndex = 4;
+            this.IsCustomImages.Text = "Check if you want to use your images.";
+            this.IsCustomImages.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1262, 745);
+            this.Controls.Add(this.TestImagesButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -485,6 +509,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button TestImagesButton;
+        private System.Windows.Forms.CheckBox IsCustomImages;
     }
 }
 
