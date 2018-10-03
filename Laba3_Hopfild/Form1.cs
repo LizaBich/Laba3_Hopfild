@@ -151,7 +151,7 @@ namespace Laba3_Hopfild
             var labels = this.GetLabels();
             
 
-            if (this.customImages.Any())
+            if (this.customImages != null && this.customImages.Any())
             {
                 for (var i = 0; i < 3; ++i)
                 {
